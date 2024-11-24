@@ -1,0 +1,5 @@
+.DS_Store
+images/
+input_video/
+node_modules/
+output_video/

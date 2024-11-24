@@ -1,0 +1,1299 @@
+<html lang="ko" xml:lang="ko" xmlns="http://www.w3.org/1999/xhtml">
+ <head>
+  <meta content="IE=edge" http-equiv="X-UA-Compatible"/>
+  <!-- 레이아웃 관련 CSS -->
+  <!-- 레이아웃 관련 CSS //-->
+  <script src="/LSW/js/jquery/jquery.js" type="text/javascript">
+  </script>
+  <script src="/LSW/js/common/common.js" type="text/javascript">
+  </script>
+  <script src="/LSW/js/common/CookieUtil.js" type="text/javascript">
+  </script>
+  <script src="/LSW/js/jquery/jquery.loadmask.js" type="text/javascript">
+  </script>
+  <script src="/LSW/js/common/jquery-custom.js" type="text/javascript">
+  </script>
+  <!-- 레이아웃 관련 JS -->
+  <script src="/LSW/js/jquery/jquery-ui.js" type="text/javascript">
+  </script>
+  <script src="/LSW/js/jquery/jquery-ui_2017.js" type="text/javascript">
+  </script>
+  <script src="/LSW/js/jquery/jquery.layout-latest.js" type="text/javascript">
+  </script>
+  <script src="/LSW/js/common/layout.js" type="text/javascript">
+  </script>
+  <!-- 레이아웃 관련 JS //-->
+  <script src="/LSW/js/ext/ext-core.js" type="text/javascript">
+  </script>
+  <script src="/LSW/js/ext/adapter/ext/ext-base.js" type="text/javascript">
+  </script>
+  <script src="/LSW/js/ext/ext-all.js" type="text/javascript">
+  </script>
+  <script type="text/javascript">
+   var webRoot = '/LSW';
+  </script>
+  <link href="/LSW/images/ico_favorites.ico" rel="shortcut icon" type="text/css"/>
+  <link href="/LSW/css/lsw/common.css" rel="stylesheet" type="text/css"/>
+  <link href="/LSW/js/jquery/jquery.loadmask.css" rel="stylesheet" type="text/css"/>
+  <link href="/LSW/js/jquery/layout-default-latest.css" rel="stylesheet" type="text/css"/>
+  <link href="/LSW/css/lsw/layout.css" rel="stylesheet" type="text/css"/>
+  <link href="/LSW/css/lsw/board.css" rel="stylesheet" type="text/css"/>
+  <link href="/LSW/css/ui_2017.css" rel="stylesheet" type="text/css"/>
+  <link href="/LSW/css/lsw/common-ex.css" rel="stylesheet" type="text/css"/>
+  <link href="/LSW/css/lsw/ext-all.css" rel="stylesheet" type="text/css"/>
+  <link href="/LSW/css/lsw/ext_all_ex.css" rel="stylesheet" type="text/css"/>
+  <link href="/LSW/css/lsw/xtheme-layer.css" rel="stylesheet" type="text/css"/>
+  <link href="/LSW/css/lsw/eng/common.css" rel="stylesheet" type="text/css"/>
+  <title>
+   KOREAN LAW INFORMATION CENTER | LAW SEARCH
+  </title>
+ </head>
+ <body class="engtop" id="bodyId">
+  <script src="/LSW/js/eng/engAutocom.js" type="text/javascript">
+  </script>
+  <script src="/LSW/js/common/common.js" type="text/javascript">
+  </script>
+  <script src="/LSW/js/ls/engls.js" type="text/javascript">
+  </script>
+  <script type="text/javascript">
+   lsSearchObj.param.section = "lawNm" 
+	Ext.onReady(function(){
+		setAutoComplete("query", "autoComList", "autocomImg", "toggleAuto", "", "40", "");
+		
+        viewport = new Ext.Viewport({
+            layout: 'border',
+            items: [
+            {
+          		contentEl: 'topEngDiv',	
+            	region: 'north',
+            	id: 'north-top',
+                height: 130,   //63
+                bodyStyle:'padding:0 0 0 0;background:url(../images/eng/common/engsubtopbg.gif) repeat-x top;',
+                floating:{zindex:4},
+                zindex:5,
+                border:false
+         	},
+             {
+            	contentEl: 'west',
+                region: 'west',
+                id: 'west-panel', // see Ext.getCmp() below
+                split: true,
+                width: 260,// 243
+                minSize: 260,
+                maxSize: 400,
+                collapsible: true,
+                margins: '2px -5px 0 0',
+                border:false,
+                listeners:{
+       					'resize':function(){
+        						
+        						try{
+        							//leftLayout.width = viewport.items.item(2).getWidth() - 8;
+        							//el("lelistwrapLeft").style.width =  leftLayout.width;
+	        						//if(viewport.items.item(2).getWidth() > 20){
+	        						//	el("leftContent").style.display = "";
+	        						//	el("leftSlideImg").src = el("leftSlideImg").src.replace("btn_slide3.gif","btn_slide1.gif");
+	        						//	leftLayout.mode = "1";
+	        						//}
+	        					}catch(e){}
+        					}
+        		}
+            },
+            {
+            	contentEl: 'center',
+                region: 'center', // a center region is ALWAYS required for border layout
+                deferredRender: false,                
+                border:false,
+                margins: '0 1px 0 0'
+            } 
+            
+            ]
+        });
+        
+		listChange();
+		bodyHeightResize('bodyId'); // 본문 리사이즈
+		engLsSearch();
+		topModeHeightResize();
+	});
+	
+	window.onresize = function(){
+		bodyHeightResize('bodyId');
+		topModeHeightResize();
+	}
+	
+	
+	/* 목록 저장 */
+	function listSave(obj, totCnt){
+		if( totCnt <= 0){
+			alert("저장할 검색 결과가 없습니다.");
+			return false;
+		}
+		lsSearchObj.param.pg = 1;
+		lsSearchObj.param.totcnt = totCnt;
+		lsSearchObj.param.outmax = '500';//988
+
+		var lsTypeTmp = lsSearchObj.param.lsType;
+		
+		var menuId = 2;
+		
+		var form = el('saveForm');
+		form.action = "engLsScListR.do";
+		
+		form.save.value = "save";
+		form.lsAstMode.value = "1";
+		form.saveTarget.value = "whole";
+		appendInputEls(form, "hidden", lsSearchObj.param);
+		
+		
+		SaveWindow.showListSave(obj);
+		
+	}
+  </script>
+  <form action="lsSc.do" id="search" method="get" name="search" onsubmit="javascript:engLsSearch();return false;">
+   <div id="topEngDiv">
+    <!-- 스킵 네비게이션 -->
+    <div id="skipnavi">
+     <p>
+      <a href="#naviId">
+       주메뉴 바로가기
+      </a>
+     </p>
+     <p>
+      <a href="#west">
+       목차 바로가기
+      </a>
+     </p>
+     <p>
+      <a href="#WideListDIV">
+       본문 바로가기
+      </a>
+     </p>
+    </div>
+    <div class="e_subhead">
+     <div class="lnb">
+      <ul>
+       <li class="bano">
+        <a href="http://www.law.go.kr" target="_blank">
+         <img alt="국가법령정보센터" src="/LSW/images/eng/common/btn_kr.gif"/>
+        </a>
+       </li>
+      </ul>
+     </div>
+    </div>
+    <div class="esearch">
+     <div class="logo">
+      <a href="/LSW/eng/engMain.do">
+       <img alt="Korean law information center" src="/LSW/images/eng/common/logo.gif"/>
+      </a>
+     </div>
+     <fieldset>
+      <legend>
+       검색 폼
+      </legend>
+      <div class="inp" onmouseout="mDivMOver = false;" onmouseover="mDivMOver = true;">
+       <div class="sebox">
+        <label class="label_b" for="query">
+         검색어 입력
+        </label>
+        <input id="query" name="query" onclick="clickQuery();" onkeypress="javascript:searchByKeyPress(event);" title="검색" type="text" value=""/>
+        <a href="javascript:;" onclick="javascript:toggleViewState();">
+         <img alt="펼침" class="opclbt" id="autocomImg" src="/LSW/images/eng/common/btn_seldownv12.gif"/>
+        </a>
+        <a href="javascript:;" id="sear" onclick="javascript:engLsSearch();return false;">
+         <img alt="Search" class="deshbt" src="/LSW/images/eng/common/btn_subdeseh.gif"/>
+        </a>
+       </div>
+       <div class="optin" id="autom">
+        <div class="tit" id="toggleAuto" style="display:none;">
+         법령명 검색어 자동완성
+         <div>
+          <a href="javascript:;" onclick="javascript:changeAutocomState(HIDE_HISTORY);">
+           닫기
+          </a>
+         </div>
+        </div>
+        <iframe class="not" id="autoIframe" title="내용 없는 프레임">
+        </iframe>
+        <div class="conwrap" id="autoComList" style="display:none;">
+        </div>
+       </div>
+      </div>
+     </fieldset>
+    </div>
+    <script type="text/javascript">
+     //<![CDATA[
+/* 페이지별 검색어 메시지 - 임시 */
+var searchMessage = new Array("HOME"
+		, "LAW BY CLASSIFICATION"
+		, "LAW SEARCH"
+		, "ABOUT KOREAN LAW"
+		, "REPOSITORY"
+);
+
+	function menuChange(num){
+		var url = "";
+		var query = "";
+		switch(num){
+			case 0: 
+				url = "engMain.do?menuId=0";
+				document.location.href = url;
+			break;
+			
+			case 1: 
+				url = "engLsAstSc.do?menuId=1";
+				if(el("query") != null && typeof(el("query")) != "undefined" ){
+					query = el("query").value;
+				}
+				document.location.href = url+"&query=" + encodeURIComponent(query);
+			break;
+			
+			case 2: 
+				url = "engLsSc.do?menuId=2";
+				if(el("query") != null && typeof(el("query")) != "undefined" ){
+					query = el("query").value;
+				}
+				document.location.href = url+"&query=" + encodeURIComponent(query);
+			break;
+			
+			case 3: 
+				url = "engAbout.do?menuId=3";
+				document.location.href = url;
+			break;
+			
+			case 4: 
+				url = "engRepositoryList.do?menuId=4";
+				document.location.href = url;
+			break;
+				
+		}
+	}
+	
+// var searchId = 0;
+
+// // 각각의 JSP에 들어갈것 검색어 이벤트 관련 ----------------------------- 여기서부터 시작
+// function clickQuery() {
+// 	if(clickQueryCnt!=0) {
+// 		el("autom").style.display = el("autom").style.display == 'none' ? 'block':'none';
+// 		el("autocomImg").src = el("autom").style.display == 'none' ? el("autocomImg").src.replace('upv6.gif','downv6.gif'):el("autocomImg").src.replace('downv6.gif','upv6.gif');
+// 	}
+// 	clickQueryCnt++;
+
+
+// 	if(el("query").value == searchMessage[searchId]){
+// 		el("query").value ="";
+// 		el("query").style.fontSize  = "13.3px";
+// 	}
+// }
+
+Ext.onReady(function(){
+	// searchId값 ex) HOME - 0 , LAW BY CLASSIFICATION - 1 ...
+	searchId = 2;
+// 	setAutoComplete("query", "autoComList", "autocomImg", "toggleAuto", "", "40", "");
+// 	el("query").value  = searchMessage[searchId];
+});
+
+// function engSearch(){
+// 	// 검색 로직 처리후 추가 할것
+// 	setSchKeywordCookie();
+// 	changeAutocomState(HIDE_HISTORY);
+// }
+
+/////////////////////////////////// ---------------------- JSP 영역 끝
+
+
+// 이미지 변경
+
+function imgchange(imgobj){
+	if(imgobj.src.indexOf('on.gif')==-1){
+		imgobj.src=imgobj.src.replace('.gif','on.gif');
+		imgobj.onmouseout=function(){if(this.src.indexOf('on.gif')!=-1) this.src=this.src.replace('on.gif','.gif');}
+	}
+}
+
+function imgchangeblur(imgobj){
+	imgobj.src=imgobj.src.replace('on.gif','.gif');
+}
+//]]>
+    </script>
+    <fieldset>
+     <legend>
+      주메뉴
+     </legend>
+     <div class="engtopnav" id="naviId">
+      <ul class="menu">
+       <!-- HOME -->
+       <li>
+        <a href="/LSW/eng/engMain.do?menuId=0" id="enav1a" onblur="imgchangeblur(el('nav1'));" onclick="javascript:menuChange(0);return false;" onfocus="imgchange(el('nav1'));" onmouseover="imgchange(el('nav1'));">
+         <img alt="HOME" id="nav1" src="/LSW/images/eng/common/esubnav01.gif"/>
+        </a>
+       </li>
+       <!-- LAW BY CLASSIFICATION -->
+       <li>
+        <a href="/LSW/eng/engLsAstSc.do?menuId=1" id="enav2a" onblur="imgchangeblur(el('nav2'));" onclick="javascript:menuChange(1);return false;" onfocus="imgchange(el('nav2'));" onmouseover="imgchange(el('nav2'));">
+         <img alt="LAW BY CLASSIFICATION" id="nav2" src="/LSW/images/eng/common/esubnav02.gif"/>
+        </a>
+       </li>
+       <!-- LAW SEARCH -->
+       <li>
+        <a href="/LSW/eng/engLsSc.do?menuId=2" id="enav3a" onblur="imgchangeblur(el('nav3'));" onclick="javascript:menuChange(2);return false;" onfocus="imgchange(el('nav3'));" onmouseover="imgchange(el('nav3'));">
+         <img alt="LAW SEARCH" id="nav3" src="/LSW/images/eng/common/esubnav03on.gif"/>
+        </a>
+       </li>
+       <!-- LAW BY CLASSIFICATION -->
+       <li>
+        <a href="/LSW/eng/engAbout.do?menuId=3" id="enav4a" onblur="imgchangeblur(el('nav4'));" onclick="javascript:menuChange(3);return false;" onfocus="imgchange(el('nav4'));" onmouseover="imgchange(el('nav4'));">
+         <img alt="ABOUT KOREAN LAW" id="nav4" src="/LSW/images/eng/common/esubnav04.gif"/>
+        </a>
+       </li>
+       <!-- REPOSITORY -->
+       <li>
+        <a href="/LSW/eng/engRepositoryList.do?menuId=4" id="enav5a" onblur="imgchangeblur(el('nav5'));" onclick="javascript:menuChange(4);return false;" onfocus="imgchange(el('nav5'));" onmouseover="imgchange(el('nav5'));">
+         <img alt="REPOSITORY" id="nav5" src="/LSW/images/eng/common/esubnav05.gif"/>
+        </a>
+       </li>
+      </ul>
+     </div>
+     <!-- top navigation </form>//-->
+    </fieldset>
+   </div>
+   <div id="container8" style="display:none;">
+    <!-- left -->
+    <div class="con1" id="west">
+     <div id="leftContent">
+      <!-- list -->
+      <div id="listDiv">
+       <div class="lelistwrap" id="lelistwrapLeft">
+        <p>
+         <img alt="검색창에 검색어를 입력하세요. 상세 정보를 확인하실 수 있습니다" src="/LSW/images/common/img_loading01.gif"/>
+        </p>
+       </div>
+      </div>
+     </div>
+    </div>
+    <div class="con2_2" id="center">
+     <div class="v7slide" id="slideLeft" style="width:11px;height:700px;position:absolute;left:-15px;border-left:2px solid #b4b4b4;margin-left:12px;">
+      <a href="javascript:;" onclick="javascript:leftShowHidden();return false;">
+       <img alt="CLOSE" class="ma1" id="leftSlideImg" src="/LSW/images/button/leslidev7_1.gif" style="margin:77px 0 0 0;"/>
+      </a>
+      <a href="javascript:;" onclick="javascript:listChange();return false;">
+       <img alt="OPEN" id="leftSlideImg2" src="/LSW/images/button/leslidev7_2.gif" style="margin: 4px 0 0 0;"/>
+      </a>
+     </div>
+     <!-- slide //-->
+     <!-- 본문 선택 영역  -->
+     <div class="confnla4">
+      <div class="lef1" style="margin-left: 17px; padding:3px 0 0;">
+       <ul>
+        <a class="btn type7" href="javascript:;" id="compareEngWithKoBtn" onclick="lawComparePop();return false;" title="한글법령비교">
+         한글법령비교
+        </a>
+       </ul>
+      </div>
+      <div class="rig1">
+       <div class="fnall">
+        <a href="javascript:;" id="bdySaveBtn" onclick="javascript:bdySavePrint(0,this);" title="저장">
+         <img alt="SAVE" src="/LSW/images/common/btn_v13fn6.png"/>
+        </a>
+        <a href="javascript:;" id="bdyPrintBtn" onclick="javascript:bdySavePrint(1, this);">
+         <img alt="PRINT" src="/LSW/images/common/btn_v13fn7.png"/>
+        </a>
+       </div>
+      </div>
+     </div>
+     <!-- 본문 선택 영역  //-->
+     <div id="bodyContentTOP" style="margin-left:10px;">
+      <div class="viewwrap" id="viewwrapCenter" style="overflow-x:auto;">
+       <div id="bodyContent">
+        <div class="subdefa">
+         <h3>
+          <img alt="영문법령" src="/LSW/images/common/h2_subdef11.gif"/>
+         </h3>
+         <p class="txt1">
+          <img alt="이곳에서는 법제처에서 제공하는 연혁과 현행 영문법령을 찾아볼 수 있습니다. 한글법령명 또는 영문법령명에 포함된 용어를 입력하거나, 공포번호 및 공포일자를 입력하십시오." src="/LSW/images/common/txt_subdef14.gif"/>
+         </p>
+         <p class="txt2">
+          <img alt="위 검색창에 검색어를 입력하십시오" src="/LSW/images/common/txt_subdef9.gif"/>
+          <img alt="검색" src="/LSW/images/common/txt_subdef8.gif"/>
+         </p>
+        </div>
+       </div>
+      </div>
+     </div>
+     <div id="bodySideContent" style="display:none;margin-left:20px;">
+      <div class="subdefa">
+       <h3>
+        <img alt="영문법령" src="/LSW/images/common/h2_subdef11.gif"/>
+       </h3>
+       <p class="txt1">
+        <img alt="이곳에서는 법제처에서 제공하는 연혁과 현행 영문법령을 찾아볼 수 있습니다. 한글법령명 또는 영문법령명에 포함된 용어를 입력하거나, 공포번호 및 공포일자를 입력하십시오." src="/LSW/images/common/txt_subdef14.gif"/>
+       </p>
+       <p class="txt2">
+        <img alt="위 검색창에 검색어를 입력하십시오" src="/LSW/images/common/txt_subdef9.gif"/>
+        <img alt="검색" src="/LSW/images/common/txt_subdef8.gif"/>
+       </p>
+      </div>
+     </div>
+    </div>
+   </div>
+   <div class="confnla2" id="WideListDIV" style="display:none;">
+    <!-- 총건수/새창 등등 -->
+    <div class="lelitop lelbg1">
+     <div class="num" id="writeNumDiv">
+      <b>
+       LAW
+      </b>
+      0 Result
+     </div>
+     <div class="rico lay_right" style="width:675px;">
+      <fieldset>
+       <legend>
+        정렬방법 선택
+       </legend>
+       <p class="right_util">
+        <span id="filerDiv" style="margin-top:-1px;">
+         <label class="label_b" for="filSe">
+          정렬분류 선택
+         </label>
+         <select id="filSe" style="width:150px;">
+          <option selected="selected" value="10">
+           Alphabetical Order
+          </option>
+          <option value="20">
+           Gov.Body
+          </option>
+          <option value="30">
+           Field
+          </option>
+          <option value="40">
+           Type
+          </option>
+          <option value="50">
+           Prom. Date
+          </option>
+          <option value="70">
+           Enf. Date
+          </option>
+          <option value="60">
+           Prom. Num
+          </option>
+          <option value="90">
+           Revision
+          </option>
+         </select>
+        </span>
+        <span id="filerDivHanSi" style="margin-top:-1px;display:none;">
+         <label class="label_b" for="filSeHanSi">
+          정렬분류 선택
+         </label>
+         <select id="filSeHanSi" style="width:150px;">
+          <option selected="selected" value="10">
+           Alphabetical Order
+          </option>
+          <option value="20">
+           Gov.Body
+          </option>
+          <option value="30">
+           Field
+          </option>
+          <option value="40">
+           Type
+          </option>
+          <option value="50">
+           Prom. Date
+          </option>
+          <option value="70">
+           Enf. Date
+          </option>
+          <option value="60">
+           Prom. Num
+          </option>
+          <option value="90">
+           Revision
+          </option>
+         </select>
+        </span>
+        <a href="javascript:;" onclick="javascript:setFilterChg(el('filSe'));return false;">
+         <img alt="CLICK" src="/LSW/images/eng/button/btn_select.gif" style="cursor:pointer;"/>
+        </a>
+        <!-- 가나다 -->
+        <span id="filerGana" style="margin-top:-1px;">
+         <label class="label_b" for="selGana">
+          가나다별 정렬방법 선택
+         </label>
+         <select id="selGana" name="selGana" style="width:60px;">
+          <option value="0">
+           ALL
+          </option>
+          <option value="65">
+           A
+          </option>
+          <option value="66">
+           B
+          </option>
+          <option value="67">
+           C
+          </option>
+          <option value="68">
+           D
+          </option>
+          <option value="69">
+           E
+          </option>
+          <option value="70">
+           F
+          </option>
+          <option value="71">
+           G
+          </option>
+          <option value="72">
+           H
+          </option>
+          <option value="73">
+           I
+          </option>
+          <option value="74">
+           J
+          </option>
+          <option value="75">
+           K
+          </option>
+          <option value="76">
+           L
+          </option>
+          <option value="77">
+           M
+          </option>
+          <option value="78">
+           N
+          </option>
+          <option value="79">
+           O
+          </option>
+          <option value="80">
+           P
+          </option>
+          <option value="81">
+           Q
+          </option>
+          <option value="82">
+           R
+          </option>
+          <option value="83">
+           S
+          </option>
+          <option value="84">
+           T
+          </option>
+          <option value="85">
+           U
+          </option>
+          <option value="86">
+           V
+          </option>
+          <option value="87">
+           W
+          </option>
+          <option value="88">
+           X
+          </option>
+          <option value="89">
+           Y
+          </option>
+          <option value="90">
+           Z
+          </option>
+         </select>
+        </span>
+        <!-- 소관부처 -->
+        <span id="filterOrg" style="margin-top:-1px;display:none;">
+         <label class="label_b" for="selOrg">
+          소관부처 선택
+         </label>
+         <select class="v8sel" id="selOrg" name="selOrg" style="width:300px;">
+          <option selected="selected" value="">
+           ALL
+          </option>
+          <option value="1492000">
+           Ministry of Employment and Labor
+          </option>
+          <option value="1721000">
+           Ministry of Science and ICT
+          </option>
+          <option value="1342000">
+           Ministry of Education
+          </option>
+          <option value="1830000">
+           Ministry of Patriots and Veterans Affairs
+          </option>
+          <option value="1290000">
+           Ministry of National Defense
+          </option>
+          <option value="1613000">
+           Ministry of Land and Transport
+          </option>
+          <option value="1051000">
+           Ministry of Economy and Finance
+          </option>
+          <option value="1543000">
+           Ministry of Agriculture, Food and Rural Affairs
+          </option>
+          <option value="1371000">
+           Ministry of Culture, Sports and Tourism
+          </option>
+          <option value="1270000">
+           Ministry of Justice
+          </option>
+          <option value="1352000">
+           Ministry of Health and Welfare
+          </option>
+          <option value="1450000">
+           Ministry of Trade, Industry and Energy
+          </option>
+          <option value="1383000">
+           Ministry of Gender Equality and Family
+          </option>
+          <option value="1262000">
+           Ministry of Foreign Affairs
+          </option>
+          <option value="1760000">
+           Ministry of Personnel management
+          </option>
+          <option value="1421000">
+           Ministry of SMEs and Startups
+          </option>
+          <option value="1250000">
+           Ministry of Unification
+          </option>
+          <option value="1192000">
+           Ministry of Oceans and Fisheries
+          </option>
+          <option value="1741000">
+           Ministry of the Interior and Safety
+          </option>
+          <option value="1480000">
+           Ministry of Environment
+          </option>
+          <option value="1790364">
+           Senior Civil Servant Criminal Investigation Department
+          </option>
+          <option value="1021100">
+           Presidential Security Service
+          </option>
+          <option value="1170000">
+           Ministry of Government Legislation
+          </option>
+          <option value="1471000">
+           Ministry of Food and Drug Safety
+          </option>
+          <option value="1280000">
+           Supreme Prosecutors office
+          </option>
+          <option value="1320000">
+           National Police Agency
+          </option>
+          <option value="1220000">
+           Korea Customs Service
+          </option>
+          <option value="1210000">
+           National Tax Service
+          </option>
+          <option value="1360000">
+           Korea Meteorological Administration
+          </option>
+          <option value="1390000">
+           Rural Development Administration
+          </option>
+          <option value="1550000">
+           Cultural Heritage Administration
+          </option>
+          <option value="1690000">
+           Defense Acquisition Program Administration
+          </option>
+          <option value="1300000">
+           Military Manpower Administration
+          </option>
+          <option value="1400000">
+           Korea Forest Service
+          </option>
+          <option value="1730000">
+           Saemangeum Development and Investment Agency
+          </option>
+          <option value="1661000">
+           National Fire Agency
+          </option>
+          <option value="1832000">
+           Overseas Korean's Administration
+          </option>
+          <option value="1230000">
+           Public Procurement Service
+          </option>
+          <option value="1790387">
+           Korea Disease Control and Prevention Agency
+          </option>
+          <option value="1240000">
+           Statistics Korea
+          </option>
+          <option value="1430000">
+           Korean Intellectual Property Office
+          </option>
+          <option value="1532000">
+           Korea Coast Guard
+          </option>
+          <option value="1670000">
+           National Agency for Administrative City Construction
+          </option>
+          <option value="1075000">
+           Status Quarters of the May 18 Democratic Movement
+          </option>
+          <option value="1790365">
+           Personal Information Protection Commission
+          </option>
+          <option value="1130000">
+           Korea Fair Trade Commission
+          </option>
+          <option value="1620000">
+           National Human Rights Commission
+          </option>
+          <option value="1140100">
+           Anti-corruption &amp; Civil Rights Commission
+          </option>
+          <option value="1160100">
+           Financial Services Commission
+          </option>
+          <option value="1570100">
+           Korea Communications Commission
+          </option>
+          <option value="1079960">
+           Nuclear Safety and Security Commission
+          </option>
+          <option value="1030000">
+           National Intelligence Service
+          </option>
+          <option value="1092000">
+           Office for Government Policy Coordination
+          </option>
+          <option value="0000000">
+           etc
+          </option>
+          <option value="1040000">
+           Board of Audit and Inspection
+          </option>
+          <option value="9700000">
+           National Assembly
+          </option>
+          <option value="9740000">
+           Supreme Court
+          </option>
+          <option value="1081000">
+           The National Unification Advisory Council
+          </option>
+          <option value="9760000">
+           National Election Commission
+          </option>
+          <option value="9750000">
+           Constitutional Court
+          </option>
+         </select>
+        </span>
+        <span style="margin-top:-1px;display:none;">
+         <label class="label_b" for="filSeWord">
+          가나다별 정렬방법 선택
+         </label>
+         <select id="filSeWord" name="filSeWord" style="width:60px;">
+          <option value="1">
+           가
+          </option>
+          <option value="2">
+           나
+          </option>
+          <option value="3">
+           다
+          </option>
+          <option value="4">
+           라
+          </option>
+          <option value="5">
+           마
+          </option>
+          <option value="6">
+           바
+          </option>
+          <option value="7">
+           사
+          </option>
+          <option value="8">
+           아
+          </option>
+          <option value="9">
+           자
+          </option>
+          <option value="10">
+           차
+          </option>
+          <option value="11">
+           카
+          </option>
+          <option value="12">
+           타
+          </option>
+          <option value="13">
+           파
+          </option>
+          <option value="14">
+           하
+          </option>
+          <option value="15">
+           기타
+          </option>
+         </select>
+        </span>
+        <!-- 법령분류 -->
+        <span id="filterLawClass" style="margin-top:-1px;display:none;">
+         <label class="label_b" for="selLawClass">
+          법령분류 선택
+         </label>
+         <select class="v8sel" id="selLawClass" name="selLawClass" style="width:300px;">
+          <option selected="selected" value="">
+           ALL
+          </option>
+          <option value="01">
+           Constitution
+          </option>
+          <option value="02">
+           National Assembly
+          </option>
+          <option value="03">
+           Election and Political Party
+          </option>
+          <option value="04">
+           Administration in General
+          </option>
+          <option value="05">
+           Public Official
+          </option>
+          <option value="06">
+           Court
+          </option>
+          <option value="07">
+           Judicial Affairs
+          </option>
+          <option value="08">
+           Civil Affairs
+          </option>
+          <option value="09">
+           Crimes and Criminal Procedure
+          </option>
+          <option value="10">
+           Local Government
+          </option>
+          <option value="11">
+           Police Affairs
+          </option>
+          <option value="12">
+           Civil Defence and Firefighting
+          </option>
+          <option value="13">
+           Military Affairs
+          </option>
+          <option value="14">
+           Conscription Affairs
+          </option>
+          <option value="15">
+           Patriots and Veterans Affairs
+          </option>
+          <option value="16">
+           Education and Academy
+          </option>
+          <option value="17">
+           Culture and Public Relations
+          </option>
+          <option value="18">
+           Science and Technology
+          </option>
+          <option value="19">
+           Finance and Economy in General
+          </option>
+          <option value="20">
+           Internal Tax
+          </option>
+          <option value="21">
+           Tariff
+          </option>
+          <option value="22">
+           Tobacco and Ginseng
+          </option>
+          <option value="23">
+           Currency, State Bond and Banking
+          </option>
+          <option value="24">
+           Agriculture
+          </option>
+          <option value="25">
+           Livestock
+          </option>
+          <option value="26">
+           Forest
+          </option>
+          <option value="27">
+           Fishery
+          </option>
+          <option value="28">
+           Commerce, Trade and Industry
+          </option>
+          <option value="29">
+           Industrial Standards and Measures
+          </option>
+          <option value="30">
+           Industrial Property Right
+          </option>
+          <option value="31">
+           Energy Utilization and Mining
+          </option>
+          <option value="32">
+           Electricity and Gas
+          </option>
+          <option value="33">
+           National Land Development and City
+          </option>
+          <option value="34">
+           Housing, Building and Road
+          </option>
+          <option value="35">
+           Water Resources, Land and Construction
+          </option>
+          <option value="36">
+           Health and Medical Affairs
+          </option>
+          <option value="37">
+           Pharmaceutical Affairs
+          </option>
+          <option value="38">
+           Social Welfare
+          </option>
+          <option value="39">
+           Environment
+          </option>
+          <option value="40">
+           Labor
+          </option>
+          <option value="41">
+           Land Transportation, Aviation and Tourism
+          </option>
+          <option value="42">
+           Marine Transportation
+          </option>
+          <option value="43">
+           Information and Telecommunication
+          </option>
+          <option value="44">
+           Foreign Affairs
+          </option>
+         </select>
+        </span>
+        <span id="filterLawType1" style="margin-top:-1px;display:none;">
+         <label class="label_b" for="selLawType1">
+          법령종류 선택
+         </label>
+         <select class="v8sel" id="selLawType1" name="selLawType1" style="width:300px;">
+          <option selected="selected" value="">
+           ALL
+          </option>
+          <option value="A0001">
+           Constitution
+          </option>
+          <option value="A0002">
+           Act
+          </option>
+          <option value="A0007">
+           Presidential Decree
+          </option>
+          <option value="A0009">
+           Ordinance of the Prime Minister
+          </option>
+          <option value="A0025">
+           Board of Audit and Inspection Regulations
+          </option>
+          <option value="A0097">
+           Ordinance of the Ministry of Employment and Labor
+          </option>
+          <option value="A0029">
+           Ordinance of the Ministry of Education, Science and Technology
+          </option>
+          <option value="A0031">
+           Ordinance of the Ministry of Education and Human Energy
+          </option>
+          <option value="A0032">
+           Ordinance of the Ministry of Transport
+          </option>
+          <option value="A0033">
+           Ordinance of the Ministry of National Defense
+          </option>
+          <option value="A0034">
+           Ordinance of the Ministry of Land and Oceans
+          </option>
+          <option value="A0023">
+           National Assembly Regulations
+          </option>
+          <option value="A0089">
+           Other laws
+          </option>
+          <option value="A0035">
+           Ordinance of the Ministry of Strategy and Finance
+          </option>
+          <option value="A0037">
+           Ordinance of the Ministry of Labor Employment and Labor
+          </option>
+          <option value="A0039">
+           Ordinance of the Ministry of Agriculture, Fisheries and Food
+          </option>
+          <option value="A0022">
+           Supreme Court Regulations
+          </option>
+          <option value="A0045">
+           Ordinance of the Ministry of Cultural
+          </option>
+          <option value="A0046">
+           Ordinance of the Ministry of Culture, Sports and Tourism
+          </option>
+          <option value="A0000">
+           Law
+          </option>
+          <option value="A0048">
+           Ordinance of the Ministry of Justice
+          </option>
+          <option value="A0049">
+           Ordinance of the Ministry of Health, Welfare and Family
+          </option>
+          <option value="A0050">
+           Ordinance of the Ministry of Health and Welfare
+          </option>
+          <option value="A0058">
+           Ordinance of the Ministry of Gender Equality and Family
+          </option>
+          <option value="A0059">
+           Ordinance of the Ministry of Women
+          </option>
+          <option value="A0060">
+           Ordinance of the Ministry of Foreign Trade
+          </option>
+          <option value="A0021">
+           National Election Commission Regulations
+          </option>
+          <option value="A0065">
+           Ordinance of the Ministry of Knowledge Economy
+          </option>
+          <option value="A0070">
+           Ordinance of the Ministry of Unification
+          </option>
+          <option value="A0072">
+           Ordinance of the Ministry of Administration and Security
+          </option>
+          <option value="A0024">
+           Constitutional Court Regulations
+          </option>
+          <option value="A0074">
+           Ordinance of the Ministry of Environment
+          </option>
+         </select>
+        </span>
+        <!-- 내림,오름차순 -->
+        <span id="filterSort" style="margin-top:-1px;display:none;">
+         <!-- 법령단위일때  -->
+         <label class="label_b" for="sortValue">
+          정렬순서 선택
+         </label>
+         <select id="sortValue" name="sortValue" style="width:110px;">
+          <option value="desc">
+           Descending
+          </option>
+          <option selected="selected" value="asc">
+           Ascending
+          </option>
+         </select>
+        </span>
+        <!-- 제정·개정구분 -->
+        <span id="filterRrClsCd" style="margin-top:-1px;display:none;">
+         <label class="label_b" for="selRrClsCd">
+          제정·개정구분 선택
+         </label>
+         <select class="v8sel" id="selRrClsCd" name="selRrClsCd" style="width:170px;">
+          <option selected="selected" value="">
+           ALL
+          </option>
+          <option value="110401">
+           New Enactment
+          </option>
+          <option value="110402">
+           Partial Amendment
+          </option>
+          <option value="110403">
+           Whole Amendment
+          </option>
+          <option value="110404">
+           Repeal
+          </option>
+          <option value="110405">
+           Enactment Of Repeal
+          </option>
+          <option value="110406">
+           Amendments In Batch
+          </option>
+          <option value="110407">
+           Repeal In Batch
+          </option>
+          <option value="110408">
+           Etc.
+          </option>
+          <option value="110409">
+           Amendment by Other Act
+          </option>
+          <option value="110410">
+           Repeal By Other Law
+          </option>
+         </select>
+        </span>
+        <a href="javascript:;" onclick="javascript:selectChange();return false;">
+         <img alt="CLICK" src="/LSW/images/eng/button/btn_select.gif" style="cursor:pointer;"/>
+        </a>
+        <label class="label_b" for="outMaxWide">
+         정렬갯수
+        </label>
+        <select class="se1_1" id="outMaxWide" style="width:60px;">
+         <option selected="selected" value="50">
+          50
+         </option>
+         <option value="100">
+          100
+         </option>
+         <option value="150">
+          150
+         </option>
+        </select>
+        <a href="javascript:;" onclick="javascript:setOutMax(el('outMaxWide'),'2');">
+         <img alt="CLICK" src="/LSW/images/eng/button/btn_select.gif" style="cursor:pointer;"/>
+        </a>
+        <a href="javascript:;" onclick="javascript:listSave(this, wideGetTotCnt());return false;">
+         <img alt="SAVE" src="/LSW/images/button/btn_save4.gif"/>
+        </a>
+       </p>
+      </fieldset>
+     </div>
+    </div>
+    <div id="writeListDiv" style="margin-top:0px;padding-top:0px;">
+     <div class="subdefa">
+      <h3>
+       <img alt="영문법령" src="/LSW/images/common/h2_subdef11.gif"/>
+      </h3>
+      <p class="txt1">
+       <img alt="이곳에서는 법제처에서 제공하는 연혁과 현행 영문법령을 찾아볼 수 있습니다. 한글법령명 또는 영문법령명에 포함된 용어를 입력하거나, 공포번호 및 공포일자를 입력하십시오." src="/LSW/images/common/txt_subdef14.gif"/>
+      </p>
+      <p class="txt2">
+       <img alt="위 검색창에 검색어를 입력하십시오" src="/LSW/images/common/txt_subdef9.gif"/>
+       <img alt="검색" src="/LSW/images/common/txt_subdef8.gif"/>
+      </p>
+     </div>
+    </div>
+    <div class="v9slide" id="wideListViewDiv" style="margin-right:-5px;margin-top:-150px;">
+     <a href="javascript:;" onclick="javascript:listChange();return false;">
+      <img alt="CLOSE" src="/LSW/images/button/leslidev7_1.gif"/>
+     </a>
+     <br/>
+    </div>
+   </div>
+  </form>
+  <div class="bx_ly" id="listSaveLayer" style="display:none">
+   <form action="#" id="saveForm" name="saveForm" target="_self">
+    <input alt="전송" style="display:none;" title="전송" type="image"/>
+    <input name="save" type="hidden" value="save"/>
+    <input id="lsAstMode2" name="lsAstMode" type="hidden" value="1"/>
+    <label class="label_b" for="lsAstMode2">
+     모드
+    </label>
+    <input id="saveWhole" name="saveTarget" type="hidden" value="whole"/>
+    <label class="label_b" for="saveWhole">
+     전체저장
+    </label>
+    <div class="bx_inner" style="margin:1px 0;">
+     <p class="ly_tit">
+      LIST SAVE
+     </p>
+     <button class="btn_clse" onclick="SaveWindow.hideListSave(); return false;">
+      <span class="blind">
+       닫기
+      </span>
+     </button>
+     <div class="ly_cont">
+      <div class="ly_tx_bx">
+       <p class="tx">
+        FILE SAVE
+       </p>
+       <div class="ly_inp_bx">
+        <input checked="checked" id="saveListXLS" name="saveExt" type="radio" value="xls"/>
+        <label for="saveListXLS">
+         XLS
+        </label>
+        <input id="saveListTXT" name="saveExt" type="radio" value="txt"/>
+        <label for="saveListTXT">
+         TXT
+        </label>
+       </div>
+      </div>
+      <div class="ly_btn_bx">
+       <div class="btnc2_1">
+        <input alt="SAVE" onclick="javascript:submitListSave();" src="/LSW/images/eng/button/btn_save2.gif" type="image"/>
+        <span class="btn_close">
+         <a href="javascript:;" onclick="javascript:SaveWindow.hideListSave();" onkeypress="">
+          <img alt="CLOSE" src="/LSW/images/eng/button/btn_close2.gif"/>
+         </a>
+        </span>
+       </div>
+      </div>
+     </div>
+    </div>
+    <div id="inputContainer" style="display:none;">
+    </div>
+   </form>
+  </div>
+  <div class="bx_ly" id="engInfoSaveLayer" style="display:none">
+   <form action="#" id="engInfoSaveForm" name="engInfoSaveForm" target="_self">
+    <div class="bx_inner" style="margin:1px 0;">
+     <p class="ly_tit">
+      FILE SAVE
+     </p>
+     <button class="btn_clse" onclick="javascript:SaveWindow.hideEngInfoSave(); return false;">
+      <span class="blind">
+       닫기
+      </span>
+     </button>
+     <input alt="전송" style="display:none;" title="전송" type="image"/>
+     <input name="save" type="hidden" value="save"/>
+     <!--  id="save" -->
+     <div class="ly_cont">
+      <div class="ly_tx_bx">
+       <div class="">
+        <input checked="checked" class="radio" id="docSelectIdHWP" name="docSelectId" type="radio" value="hwp"/>
+        <label for="docSelectIdHWP">
+         HWP
+        </label>
+        <input class="radio" id="docSelectIdPDF" name="docSelectId" type="radio" value="pdf"/>
+        <label for="docSelectIdPDF">
+         PDF
+        </label>
+        <input class="radio" id="docSelectIdDOC" name="docSelectId" type="radio" value="doc"/>
+        <label for="docSelectIdDOC">
+         DOC
+        </label>
+       </div>
+      </div>
+      <!-- button -->
+      <div class="ly_btn_bx">
+       <input alt="SAVE" id="engLsSaveBtn" onclick="javascript:engLsBeforeSavePrint();return false;" src="/LSW/images/eng/button/btn_save2.gif" type="image"/>
+       <input alt="CLOSE" onclick="javascript:SaveWindow.hideEngInfoSave();return false" src="/LSW/images/eng/button/btn_close2.gif" type="image"/>
+      </div>
+      <!-- button //-->
+     </div>
+    </div>
+   </form>
+  </div>
+ </body>
+</html>
